@@ -16,7 +16,7 @@ $Searcher.ServerSelection = 3 # Third Party
 
 # Les critères de recherches
 $Criteria = "IsInstalled=0 and Type='Driver'"
-Write-Host('Searching Driver-Updates...') -Fore Green
+Write-Host('Recherche update drivers...') -Fore Green
 $SearchResult = $Searcher.Search($Criteria)
 
 # List qui match les critèes
@@ -28,7 +28,7 @@ $Updates | select Title, DriverModel, DriverVerDate, Driverclass, DriverManufact
 # Create la collection d'update a telecharger
 $UpdatesToDownload = New-Object -Com Microsoft.Update.UpdateColl
 $updates | % { $UpdatesToDownload.Add($_) | out-null }
-Write-Host('Downloading Drivers...')  -Fore Green
+Write-Host('Telecharge les drivers...')  -Fore Green
 
 $UpdateSession = New-Object -Com Microsoft.Update.Session
 
@@ -41,20 +41,14 @@ $Downloader.Download()
 # Creer les la collections d'update a installer
 $UpdatesToInstall = New-Object -Com Microsoft.Update.UpdateColl
 $updates | % { if($_.IsDownloaded) { $UpdatesToInstall.Add($_) | out-null } }
-Write-Host('Installing Drivers...')  -Fore Green
+Write-Host('Installation des drivers...')  -Fore Green
 
 # Install les updates
 $Installer = $UpdateSession.CreateUpdateInstaller()
 $Installer.Updates = $UpdatesToInstall
 $InstallationResult = $Installer.Install()
 
-# Check if a reboot is required after installation
-if($InstallationResult.RebootRequired) {
-  # Display a message indicating a reboot is required
-  Write-Host('Reboot required! please reboot now..') -Fore Red
-} else {  Write-Host('Done..') -Fore Green }
-
-$updateSvc.Services | ? { $_.IsDefaultAUService -eq $false -and $_.ServiceID -eq "$Service" } | % { $UpdateSvc.RemoveService($_.ServiceID) }
+Write-Host('MAJ drivers terminer, passage MAJ Nvidia')
 
 # Ce script permet la detection automatique de la carte nvidia et installe le dernier drivers depuis le site officiel
 
