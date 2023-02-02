@@ -49,6 +49,8 @@ $Installer = $UpdateSession.CreateUpdateInstaller()
 $Installer.Updates = $UpdatesToInstall
 $InstallationResult = $Installer.Install()
 
+$updateSvc.Services | ? { $_.IsDefaultAUService -eq $false -and $_.ServiceID -eq "$WindowsUpdateServiceID" } | % { $UpdateSvc.RemoveService($_.ServiceID) }
+
 Write-Host('MAJ drivers terminer, passage MAJ Nvidia')
 
 $7zipinstalled = $false 
@@ -129,7 +131,7 @@ else {
 }
 
 # dossier telechargement nvidia
-$nvidiaTempFolder = "$folder\NVIDIA"
+$nvidiaTempFolder = "C:\Temp\NVIDIA"
 New-Item -Path $nvidiaTempFolder -ItemType Directory 2>&1 | Out-Null
 
 # Genere le lien
