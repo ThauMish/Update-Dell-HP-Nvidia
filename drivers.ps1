@@ -1,20 +1,21 @@
 # Creer une instance pour  Update Service Manager
 $UpdateSvc = New-Object -ComObject Microsoft.Update.ServiceManager
+$Services = $UpdateSvc.Services
 
 # Fais la liste des services
-$Service = (New-Object -ComObject Microsoft.Update.ServiceManager).Services
-$UpdateSvc.AddService2("$Service",7,"")
+$WindowsUpdateService = $Services | Where-Object { $_.Name -eq "Windows Update" }
+$WindowsUpdateServiceID = $WindowsUpdateService.ServiceID
 
 # Creer une update session
 $Session = New-Object -ComObject Microsoft.Update.Session
 $Searcher = $Session.CreateUpdateSearcher()
 
 # Set le serviceID pour l'update
-$Searcher.ServiceID = '$Service'
+$Searcher.ServiceID = "$WindowsUpdateServiceID"
 $Searcher.SearchScope =  1 # MachineOnly
 $Searcher.ServerSelection = 3 # Third Party
 
-# Les critères de recherches
+# Les criteres de recherches
 $Criteria = "IsInstalled=0 and Type='Driver'"
 Write-Host('Recherche update drivers...') -Fore Green
 $SearchResult = $Searcher.Search($Criteria)
@@ -49,16 +50,6 @@ $Installer.Updates = $UpdatesToInstall
 $InstallationResult = $Installer.Install()
 
 Write-Host('MAJ drivers terminer, passage MAJ Nvidia')
-
-# Ce script permet la detection automatique de la carte nvidia et installe le dernier drivers depuis le site officiel
-
-# Installer options
-param (
-    [switch]$clean = $false, # efface ancien driver et remplace par le nv
-    [string]$folder = "$env:temp" # emplacement driver
-)
-
-# Check 7zip
 
 $7zipinstalled = $false 
 if ((Test-path HKLM:\SOFTWARE\7-Zip\) -eq $true) {
@@ -200,4 +191,3 @@ Switch ($ReadHost) {
 }
 
 exit
-
