@@ -11,10 +11,8 @@
 ### Comment utiliser le script : 
 
     * Téléchargez le fichier drivers.ps1 depuis ce dépôt Github.
-    * Ouvrez une fenêtre de PowerShell en tant qu'administrateur.
-    * Exécutez le script en utilisant la commande suivante : 
-
-    ```.\drivers.ps1```
+    * :warning: Ouvrez une fenêtre de PowerShell en tant qu'administrateur :warning:.
+    * Exécutez le script en utilisant la commande suivante : .\drivers.ps1
 
 + Le script se connectera aux API des différents fabricants et téléchargera les dernières versions de vos pilotes. 
 + Il les installer automatiquement pour vous.
